@@ -1,0 +1,50 @@
+{
+  "modules": [
+    {
+      "id": 1,
+      "title": "Fundamentos de JavaScript",
+      "description": "Aprenda os conceitos essenciais de JavaScript, incluindo requisições HTTP e introdução à linguagem.",
+      "lessons": [
+        {
+          "id": 1,
+          "title": "JavaScript em 100 Segundos",
+          "youtubeId": "CsF5emTpzl8"
+        },
+        {
+          "id": 2,
+          "title": "Requisições HTTP com JavaScript",
+          "youtubeId": "QbPwodK_z5s"
+        },
+        {
+          "id": 3,
+          "title": "AULA DE NODE.JS COM JAVASCRIPT, JSON-SERVER E REACT.",
+          "youtubeId": "axctruZ5gEY"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "PHP para Programadores JavaScript",
+      "description": "Transição de JavaScript para PHP, explorando os fundamentos da linguagem backend.",
+      "lessons": [
+        {
+          "id": 3,
+          "title": "PHP para Programador JavaScript #01",
+          "youtubeId": "4t9xWE5fZSo"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Banco de Dados com SQL",
+      "description": "Introdução ao SQL para gerenciamento de bancos de dados relacionais.",
+      "lessons": [
+        {
+          "id": 4,
+          "title": "SQL - Aula 01",
+          "youtubeId": "pLvSFpzOsS8"
+        }
+      ]
+    }
+  ]
+}

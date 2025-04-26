@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel Administrativo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      const [modules, setModules] = useState([]);
+      const [newLesson, setNewLesson] = useState({ title: '', youtubeId: '', description: '' });
+      const [editingLesson, setEditingLesson] = useState(null);
+      const [error, setError] = useState('');
+
+      // Carrega os módulos ao montar o componente
+      useEffect(() => {
+        fetchModules();
+      }, []);
+
+      const fetchModules = async () => {
+        try {
+          const response = await fetch('http://localhost:3000/modules');
+          const data = await response.json();
+          setModules(data);
+        } catch (err) {
+          setError('Erro ao carregar módulos');
+        }
+      };
+
+      // Adiciona uma nova aula
+      const handleAddLesson = async (moduleId) => {
+        if (!newLesson.title || !newLesson.youtubeId) {
+          setError('Título e ID do YouTube são obrigatórios');
+          return;
+        }
+
+        try {
+          const response = await fetch(`http://localhost:3000/modules/${moduleId}/lessons`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newLesson),
+          });
+          if (response.ok) {
+            setNewLesson({ title: '', youtubeId: '', description: '' });
+            fetchModules();
+          } else {
+            setError('Erro ao adicionar aula');
+          }
+        } catch (err) {
+          setError('Erro ao adicionar aula');
+        }
+      };
+
+      // Deleta uma aula
+      const handleDeleteLesson = async (moduleId, lessonId) => {
+        try {
+          const response = await fetch(`http://localhost:3000/modules/${moduleId}/lessons/${lessonId}`, {
+            method: 'DELETE',
+          });
+          if (response.ok) {
+            fetchModules();
+          } else {
+            setError('Erro ao deletar aula');
+          }
+        } catch (err) {
+          setError('Erro ao deletar aula');
+        }
+      };
+
+      // Atualiza uma aula
+      const handleUpdateLesson = async (moduleId, lessonId) => {
+        try {
+          const response = await fetch(`http://localhost:3000/modules/${moduleId}/lessons/${lessonId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(editingLesson),
+          });
+          if (response.ok) {
+            setEditingLesson(null);
+            fetchModules();
+          } else {
+            setError('Erro ao atualizar aula');
+          }
+        } catch (err) {
+          setError('Erro ao atualizar aula');
+        }
+      };
+
+      return (
+        <div className="container mx-auto p-6">
+          <h1 className="text-3xl font-bold mb-6">Painel Administrativo - Gerenciamento de Módulos</h1>
+          {error && <p className="text-red-500 mb-4">{error}</p>}
+
+          {modules.map((module) => (
+            <div key={module.id} className="bg-white p-6 rounded-lg shadow-md mb-6">
+              <h2 className="text-2xl font-semibold mb-2">{module.title}</h2>
+              <p className="text-gray-600 mb-4">{module.description}</p>
+
+              <h3 className="text-xl font-semibold mb-4">Aulas</h3>
+              <ul className="space-y-4">
+                {module.lessons.map((lesson) => (
+                  <li key={lesson.id} className="border-b pb-4">
+                    {editingLesson && editingLesson.id === lesson.id ? (
+                      <div className="space-y-2">
+                        <input
+                          type="text"
+                          value={editingLesson.title}
+                          onChange={(e) => setEditingLesson({ ...editingLesson, title: e.target.value })}
+                          className="w-full p-2 border rounded"
+                          placeholder="Título"
+                        />
+                        <input
+                          type="text"
+                          value={editingLesson.youtubeId}
+                          onChange={(e) => setEditingLesson({ ...editingLesson, youtubeId: e.target.value })}
+                          className="w-full p-2 border rounded"
+                          placeholder="ID do YouTube"
+                        />
+                        <textarea
+                          value={editingLesson.description || ''}
+                          onChange={(e) => setEditingLesson({ ...editingLesson, description: e.target.value })}
+                          className="w-full p-2 border rounded"
+                          placeholder="Descrição"
+                        />
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleUpdateLesson(module.id, lesson.id)}
+                            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                          >
+                            Salvar
+                          </button>
+                          <button
+                            onClick={() => setEditingLesson(null)}
+                            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                          >
+                            Cancelar
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex justify-between items-center">
+                        <div>
+                          <p className="font-medium">{lesson.title}</p>
+                          <p className="text-gray-500">YouTube ID: {lesson.youtubeId}</p>
+                          {lesson.description && <p className="text-gray-500">{lesson.description}</p>}
+                        </div>
+                        <div className="space-x-2">
+                          <button
+                            onClick={() => setEditingLesson(lesson)}
+                            className="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+                          >
+                            Editar
+                          </button>
+                          <button
+                            onClick={() => handleDeleteLesson(module.id, lesson.id)}
+                            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+                          >
+                            Deletar
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+
+              <h3 className="text-xl font-semibold mt-6 mb-4">Adicionar Nova Aula</h3>
+              <div className="space-y-4">
+                <input
+                  type="text"
+                  value={newLesson.title}
+                  onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })}
+                  className="w-full p-2 border rounded"
+                  placeholder="Título da aula"
+                />
+                <input
+                  type="text"
+                  value={newLesson.youtubeId}
+                  onChange={(e) => setNewLesson({ ...newLesson, youtubeId: e.target.value })}
+                  className="w-full p-2 border rounded"
+                  placeholder="ID do YouTube"
+                />
+                <textarea
+                  value={newLesson.description}
+                  onChange={(e) => setNewLesson({ ...newLesson, description: e.target.value })}
+                  className="w-full p-2 border rounded"
+                  placeholder="Descrição (opcional)"
+                />
+                <button
+                  onClick={() => handleAddLesson(module.id)}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                  Adicionar Aula
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
+    ReactDOM.render(<App />, document.getElementById('root'));
+  </script>
+</body>
+</html>
