@@ -49,7 +49,7 @@
     function Header() {
       return (
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-6 px-4 text-center shadow-sm">
-          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Programação Fullstack (JS + PHP + Banco de Dados)</h1>
+          <h1 id="tituloPrincipal" className="text-2xl sm:text-3xl font-bold tracking-tight">Programação Fullstack (JS + PHP + Banco de Dados)</h1>
           <p className="mt-3 text-sm sm:text-base">
             Bem-vindo, ALUNO |{' '}
             <a href="#" className="text-gray-200 hover:text-white transition-colors">Suporte</a> |{' '}
@@ -256,6 +256,10 @@
 
       return (
         <div className="min-h-screen bg-gray-50">
+          <a href="#tituloPrincipal"
+            className="font-black fixed bottom-4 right-4 bg-blue-600 text-white px-4 py-2 rounded-lg shadow-md hover:bg-blue-700 transition-colors"
+            style={{ zIndex: 1000 }}
+            > ↑ </a>
           <Header />
           <div className="container mx-auto px-4 py-6 sm:px-6 lg:px-8">
             <div className="flex flex-col md:flex-row gap-6">
