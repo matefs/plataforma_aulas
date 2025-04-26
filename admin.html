@@ -28,7 +28,7 @@
 
       const fetchModules = async () => {
         try {
-          const response = await fetch('http://localhost:3000/modules');
+          const response = await fetch('/modules');
           const data = await response.json();
           setModules(data);
         } catch (err) {
@@ -44,7 +44,7 @@
         }
 
         try {
-          const response = await fetch(`http://localhost:3000/modules/${moduleId}/lessons`, {
+          const response = await fetch(`/modules/${moduleId}/lessons`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(newLesson),
@@ -63,7 +63,7 @@
       // Deleta uma aula
       const handleDeleteLesson = async (moduleId, lessonId) => {
         try {
-          const response = await fetch(`http://localhost:3000/modules/${moduleId}/lessons/${lessonId}`, {
+          const response = await fetch(`/modules/${moduleId}/lessons/${lessonId}`, {
             method: 'DELETE',
           });
           if (response.ok) {
@@ -79,7 +79,7 @@
       // Atualiza uma aula
       const handleUpdateLesson = async (moduleId, lessonId) => {
         try {
-          const response = await fetch(`http://localhost:3000/modules/${moduleId}/lessons/${lessonId}`, {
+          const response = await fetch(`/modules/${moduleId}/lessons/${lessonId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(editingLesson),
