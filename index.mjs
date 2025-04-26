@@ -160,7 +160,7 @@ app.post('/modules/:moduleId/lessons', async (req, res) => {
 });
 
 // Iniciar o servidor
-const PORT = 3000;
+const PORT = 1234;
 app.listen(PORT, () =>
   console.log(`Servidor rodando em http://localhost:${PORT}`)
 );
